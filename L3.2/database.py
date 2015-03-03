@@ -51,13 +51,15 @@ rows = cur.fetchall()
 cols = [desc[0] for desc in cur.description]
 df = pd.DataFrame(rows, columns=cols)
 
-# select cities where July was the warmest month and print the name of the city
-print df
+# select cities where July was the warmest month and print the name of the city and state
 index = 0
+list_of_cities = []
 for month in df['warm_month']:
     if month == 'July':
-        print 'The city is: ', df.iloc[index, 0]
+        list_of_cities.append(df.iloc[index, 0])
+        list_of_cities.append(df.iloc[index, 1])
     index += 1
+print 'The list of cities is ', ", ".join(list_of_cities)
 
 
 
