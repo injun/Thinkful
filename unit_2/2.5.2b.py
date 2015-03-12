@@ -2,11 +2,13 @@ import pandas as pd
 import statsmodels.api as sm
 import numpy as np
 
-loansData = pd.read_csv('https://spark-public.s3.amazonaws.com/dataanalysis/loansData.csv')
+loansData = pd.read_csv("C:\Thinkful\Unit_2\LoanStats3a.csv")
+loansData.to_csv('loansData_clean.csv', header=True, index=False)
 
-loansData['Interest.Rate'] = loansData['Interest.Rate'].map(lambda x: x.rstrip('%'))
-loansData['Interest.Rate'] = loansData['Interest.Rate'].astype(float)
-loansData['Loan.Length'] = loansData['Loan.Length'].map(lambda x: x.rstrip('months'))
+loansData['int_rate'] = loansData['int_rate'].map(lambda x: x.rstrip('%'))
+loansData['int_rate'] = loansData['int_rate'].map(lambda x: [int(n) for n in x])
+loansData['int_rate'] = loansData['int_rate'].astype(float)
+
 
 '''convert the data in FICO.Range into string and split the string and take the lowest value'''
 loansData['FICO.Score'] = loansData['FICO.Range']
@@ -19,24 +21,23 @@ for i in range(len(temp_list)):
 loansData['FICO.Score'] = FICO
 
 
-loansData.to_csv('loansData_clean.csv', header=True, index=False)
-
-# model interes rates with monthly income /exercise says annual income?
+# model interest rates with monthly income /exercise says annual income?
 # model is (interest rates, y) = b + a1 * (monthly income, x1) + a2 * (home ownership, x2)
 
 # strip data from dataframe
-intrate = loansData['Interest.Rate']
+intrate = loansData['int_rate']
 intrate[np.isnan(intrate)] = 0 # looks for NaN and replaces by '0'
-month_inc = loansData['Monthly.Income']
-month_inc[np.isnan(month_inc)] = 0
+annual_inc = loansData['annual_inc']
+annual_inc_inc[np.isnan(annual_inc)] = 0
 home_own = loansData['Home.Ownership']
-house_ownership = [4 if x == 'OWN' else 3 if x == 'MORTGAGE' else 2 if x == 'RENT' else 1 if x == 'OTHER' else 0 for x in house_ownership]
+home_own = [4 if x == 'OWN' else 3 if x == 'MORTGAGE' else 2 if x == 'RENT' else 1 if x == 'OTHER' else 0 for x in home_own]
 
 # reshape data
 y = np.matrix(intrate)
 y = y.transpose()
 
-x1 = np.matrix(month_inc).transpose()
+
+x1 = np.matrix(annual_inc).transpose()
 x2 = np.matrix(home_own).transpose()
 x = np.column_stack([x1, x2]) # combines both variables to use in the model
 
