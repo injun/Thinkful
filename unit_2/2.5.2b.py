@@ -42,6 +42,23 @@ f = model.fit()
 
 # print results
 print 'Coefficients: ', f.params
+# coefficients without interaction term are [3.59e-06, -0.19]
 print 'Intercept: ', f.params
 print 'P-Values: ', f.pvalues
 print 'R-Squared: ', f.rsquared
+
+print "~~~~~~~~~~~ MODEL 2 WITH INTERACTION ~~~~~~~~~~~~~~~~"
+
+inter_action = annual_inc * home_own 
+
+x1 = np.matrix(annual_inc).transpose()
+x2 = np.matrix(home_own).transpose()
+x3 = np.matrix(inter_action).transpose()
+x = np.column_stack([x1, x2, x3])
+
+X = sm.add_constant(x)
+model2 = sm.OLS(y, X)
+f2 = model2.fit()
+f2.summary()
+# coefficients with interaction term are [1.64e-06, -0.24]
+
