@@ -77,7 +77,12 @@ with con:
     cur.execute('DROP TABLE IF EXISTS available_bikes')
     cur.execute("CREATE TABLE available_bikes ( execution_time INT, " + ", ".join(station_ids) + ");")
 
+# for loop to request data from online json 60 times, every 60 seconds (during 1 hour every minute)
 for i in range(60):
+    # accesses data online and stores it in df
+    r = requests.get('http://www.citibikenyc.com/stations/json')
+    df = json_normalize(r.json()['stationBeanList'])
+
     # populate with values for available bikes
     # take the string used as time stamp and parse it into a Python datetime object
     exec_time = parse(r.json()['executionTime'])
